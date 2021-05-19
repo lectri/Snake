@@ -1,20 +1,20 @@
-import time
 import pyglet
 from pyglet import shapes
 from pyglet.window import key
 from pyglet import clock
 import config as c
 
+
 # Create Window
 window = pyglet.window.Window(c.width, c.height, caption=c.caption)
 
-# Create sprite batches
+# Create Sprite & Batch
 spriteBatch = pyglet.graphics.Batch()
 snakeSprite = shapes.Rectangle(x=200, y=200, width=25, height=25, color=(152, 255, 152), batch=spriteBatch)
 
 # Decorator Methods
 @window.event
-def on_draw():
+def on_draw():  
     window.clear()
     spriteBatch.draw()
 
@@ -39,12 +39,6 @@ def move(dt):
         snakeSprite.y += 5
     if c.snakeDirection == "D":
         snakeSprite.y -= 5
-    
-# NEXT UP: CREATE A FUNCTION THAT CHANGES THE PLAYERS POSTION DEPENDING ON THE SNAKEDIRECTION STRING. THEN MAKE IT A FUNCTION THAT GETS CALLED 60 TIMES A SECOND
-
-
-pyglet.clock.schedule_interval_soft(move, 0.1)
-
 
 # Run
 pyglet.app.run()
