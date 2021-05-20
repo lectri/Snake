@@ -19,8 +19,8 @@ apple_sprite = shapes.Rectangle(x=random.randint(1, c.WIDTH), y=random.randint(1
 def on_draw():  
     window.clear()
     sprite_batch.draw()
-    
 
+# Keyboard Input Sets Snake Direction
 @window.event
 def on_key_press(symbol, modifiers):
     if symbol == key.LEFT:
@@ -33,6 +33,7 @@ def on_key_press(symbol, modifiers):
         c.snake_direction = "D"
 
 # Other Methods
+# Checks what snake direction the snake should be, and updates accordingly
 def move(dt):
     if c.snake_direction == "L":
         snake_sprite.x -= 5
@@ -43,8 +44,8 @@ def move(dt):
     if c.snake_direction == "D":
         snake_sprite.y -= 5
 
+# If the check reaches 4, there's a collision; returns true.
 def collison_check(dt, sprite, target):
-    # If the check reaches 4, there's a collision; returns true.
     check = 0
     if target.x < sprite.x + target.width:
         check += 1
@@ -67,7 +68,6 @@ def apple_snake_collide_handle():
 # NEXT UP: CREATE A FUNCTION THAT CHANGES THE PLAYERS POSTION DEPENDING ON THE SNAKEDIRECTION STRING. THEN MAKE IT A FUNCTION THAT GETS CALLED 60 TIMES A SECOND
 pyglet.clock.schedule_interval_soft(move, 1/60)
 pyglet.clock.schedule_interval_soft(collison_check, 1/60, snake_sprite, apple_sprite)
-
 
 # Run
 if __name__ == "__main__":
