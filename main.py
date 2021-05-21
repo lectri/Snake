@@ -1,3 +1,4 @@
+import math
 import random
 import pyglet
 from pyglet import shapes
@@ -12,7 +13,7 @@ window = pyglet.window.Window(c.WIDTH, c.HEIGHT, caption=c.caption)
 # Create Sprite Setup & Batch
 sprite_batch = pyglet.graphics.Batch()
 snake_sprite = shapes.Rectangle(x=200, y=200, width=25, height=25, color=(152, 255, 152), batch=sprite_batch)
-apple_sprite = shapes.Rectangle(x=random.randint(1, c.WIDTH), y=random.randint(1, c.HEIGHT), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
+apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint(1, c.HEIGHT-100), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
 
 # Decorator Methods
 @window.event
@@ -32,20 +33,27 @@ def on_key_press(symbol, modifiers):
     if symbol == key.DOWN:
         c.snake_direction = "D"
 
-# Other Methods
-# Checks what snake direction the snake should be, and updates accordingly
-def move(dt):
-    if c.snake_direction == "L":
-        snake_sprite.x -= 5
-    if c.snake_direction == "R":
-        snake_sprite.x += 5
-    if c.snake_direction == "U":
-        snake_sprite.y += 5
-    if c.snake_direction == "D":
-        snake_sprite.y -= 5
+# Update
+def update(dt):
+    move()
+    snake_apple = collison_check(snake_sprite, apple_sprite)
+    if snake_apple == True:
+        apple_snake_handle()
 
-# If the check reaches 4, there's a collision; returns true.
-def collison_check(dt, sprite, target):
+# Non-Game Loop Functions 
+# Checks what snake direction the snake should be, and updates accordingly
+def move():
+    if c.snake_direction == "L":
+        snake_sprite.x -= c.SPEED_RATE
+    if c.snake_direction == "R":
+        snake_sprite.x += c.SPEED_RATE
+    if c.snake_direction == "U":
+        snake_sprite.y += c.SPEED_RATE
+    if c.snake_direction == "D":
+        snake_sprite.y -= c.SPEED_RATE
+
+# Checks for overlap between sprite and its target, if it meets criteria, check equals 4 and returns True
+def collison_check(sprite, target):
     check = 0
     if target.x < sprite.x + target.width:
         check += 1
@@ -55,19 +63,18 @@ def collison_check(dt, sprite, target):
         check += 1
     if target.y + target.height > sprite.y:
         check += 1
-    
+
     if check == 4:
-        apple_snake_collide_handle()
+        return True
+
 
 # Collision Handle: Change Apple Position
-def apple_snake_collide_handle():
+def apple_snake_handle():
     global apple_sprite
-    apple_sprite.x = random.randint(1, c.WIDTH)
-    apple_sprite.y = random.randint(1, c.HEIGHT)
+    apple_sprite.x = random.randint(100, c.WIDTH)
+    apple_sprite.y = random.randint(1, c.HEIGHT-100)
 
-# NEXT UP: CREATE A FUNCTION THAT CHANGES THE PLAYERS POSTION DEPENDING ON THE SNAKEDIRECTION STRING. THEN MAKE IT A FUNCTION THAT GETS CALLED 60 TIMES A SECOND
-pyglet.clock.schedule_interval_soft(move, 1/60)
-pyglet.clock.schedule_interval_soft(collison_check, 1/60, snake_sprite, apple_sprite)
+pyglet.clock.schedule_interval_soft(update, 1/60)
 
 # Run
 if __name__ == "__main__":
