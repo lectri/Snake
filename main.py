@@ -12,8 +12,9 @@ window = pyglet.window.Window(c.WIDTH, c.HEIGHT, caption=c.caption)
 
 # Create Sprite Setup & Batch
 sprite_batch = pyglet.graphics.Batch()
-snake_sprite = shapes.Rectangle(x=200, y=200, width=25, height=25, color=(152, 255, 152), batch=sprite_batch)
+snake_sprite = shapes.Rectangle(x=200, y=200, width=25, height=25, color=(255, 255, 255), batch=sprite_batch)
 apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint(1, c.HEIGHT-100), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
+sprite_list = [snake_sprite]
 
 # Decorator Methods
 @window.event
@@ -36,6 +37,7 @@ def on_key_press(symbol, modifiers):
 # Update
 def update(dt):
     move()
+    follow()
     snake_apple = collison_check(snake_sprite, apple_sprite)
     if snake_apple == True:
         apple_snake_handle()
@@ -67,12 +69,36 @@ def collison_check(sprite, target):
     if check == 4:
         return True
 
+def follow():
+    global snake_sprite
+    global sprite_list
 
+    # Initalize pos with Head and Existing pos Parts
+    pos = [[snake_sprite.x, snake_sprite.y]]
+    sprites_len = len(sprite_list)
+    for i in range(sprites_len):
+        pos.append([sprite_list[i].x, sprite_list[i].y])
+
+        # Take Positions of the last pos part and current
+        last = pos[i - 1]
+        current = pos[i]
+        
+        # My hypothesis: It's not working because we are just changing
+        # A value in a list, and not the snake position itself.
+        sprite_list[i].x = last[0]
+        sprite_list[i].y = last[1] 
+
+    return pos
+           
 # Collision Handle: Change Apple Position
 def apple_snake_handle():
     global apple_sprite
+    global sprite_list
+    
     apple_sprite.x = random.randint(100, c.WIDTH)
     apple_sprite.y = random.randint(1, c.HEIGHT-100)
+    c.LENGTH += 1
+    sprite_list.append(shapes.Rectangle(x=-10, y=-10, width=50, height=50, color=(152, 255, 152), batch=sprite_batch))
 
 pyglet.clock.schedule_interval_soft(update, 1/60)
 
