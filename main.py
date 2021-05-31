@@ -12,14 +12,27 @@ window = pyglet.window.Window(c.WIDTH, c.HEIGHT, caption=c.caption)
 
 # Create Sprite Setup & Batch
 sprite_batch = pyglet.graphics.Batch()
-snake_sprite = shapes.Rectangle(x=200, y=200, width=25, height=25, color=(255, 255, 255), batch=sprite_batch)
-apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint(1, c.HEIGHT-100), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
+snake_sprite = shapes.Rectangle(
+    x=200, y=200, width=25, height=25, color=(255, 255, 152), batch=sprite_batch)
+apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint(
+    1, c.HEIGHT-100), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
 sprite_list = [snake_sprite]
+
+# Labels
+label = pyglet.text.Label(
+    f"Score = {c.LENGTH}",
+    font_name="Roboto",
+    font_size = 10,
+    x=10, y=10
+)
+
+
 
 # Decorator Methods
 @window.event
-def on_draw():  
+def on_draw():
     window.clear()
+    label.draw()
     sprite_batch.draw()
 
 # Keyboard Input Sets Snake Direction
@@ -42,8 +55,10 @@ def update(dt):
     if snake_apple == True:
         apple_snake_handle()
 
-# Non-Game Loop Functions 
+# Non-Game Loop Functions
 # Checks what snake direction the snake should be, and updates accordingly
+
+
 def move():
     if c.snake_direction == "L":
         snake_sprite.x -= c.SPEED_RATE
@@ -55,6 +70,8 @@ def move():
         snake_sprite.y -= c.SPEED_RATE
 
 # Checks for overlap between sprite and its target, if it meets criteria, check equals 4 and returns True
+
+
 def collison_check(sprite, target):
     check = 0
     if target.x < sprite.x + target.width:
@@ -69,6 +86,7 @@ def collison_check(sprite, target):
     if check == 4:
         return True
 
+
 def follow():
     global snake_sprite
     global sprite_list
@@ -82,23 +100,35 @@ def follow():
         # Take Positions of the last pos part and current
         last = pos[i - 1]
         current = pos[i]
-        
-        # My hypothesis: It's not working because we are just changing
-        # A value in a list, and not the snake position itself.
-        sprite_list[i].x = last[0]
-        sprite_list[i].y = last[1] 
 
+        # Give Current Sprite Position the last snake position
+        sprite_list[i].x = last[0]
+        sprite_list[i].y = last[1]
+
+    sprite_list[-1].visible = True
     return pos
-           
+
 # Collision Handle: Change Apple Position
 def apple_snake_handle():
-    global apple_sprite
-    global sprite_list
-    
     apple_sprite.x = random.randint(100, c.WIDTH)
     apple_sprite.y = random.randint(1, c.HEIGHT-100)
+    
     c.LENGTH += 1
-    sprite_list.append(shapes.Rectangle(x=-10, y=-10, width=50, height=50, color=(152, 255, 152), batch=sprite_batch))
+    label.text = f"Score = {c.LENGTH}"
+
+    sprite_list.append(shapes.Rectangle(
+            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+    sprite_list.append(shapes.Rectangle(
+            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+    sprite_list.append(shapes.Rectangle(
+            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+    sprite_list.append(shapes.Rectangle(
+            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+    
+    # Make Sprite Invisible Until It's Chained
+    sprite_list[-1].visible = True
+    sprite_list[-2].visible = True
+
 
 pyglet.clock.schedule_interval_soft(update, 1/60)
 
