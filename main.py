@@ -51,6 +51,7 @@ def on_key_press(symbol, modifiers):
 def update(dt):
     move()
     follow()
+    out_of_bounds()
     snake_apple = collison_check(snake_sprite, apple_sprite)
     if snake_apple == True:
         apple_snake_handle()
@@ -121,8 +122,14 @@ def apple_snake_handle():
             x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
 
     
- 
+def out_of_bounds():
+    if snake_sprite.x > c.WIDTH or snake_sprite.x < 0:
+        kill()
+    elif snake_sprite.y > c.HEIGHT or snake_sprite.y < 0:
+        kill()
 
+def kill():
+    print("Snake Is Dead")
 
 pyglet.clock.schedule_interval_soft(update, 1/60)
 
