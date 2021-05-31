@@ -116,18 +116,12 @@ def apple_snake_handle():
     c.LENGTH += 1
     label.text = f"Score = {c.LENGTH}"
 
-    sprite_list.append(shapes.Rectangle(
-            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
-    sprite_list.append(shapes.Rectangle(
-            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
-    sprite_list.append(shapes.Rectangle(
-            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
-    sprite_list.append(shapes.Rectangle(
-            x=-10, y=-10, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+    for i in range(4):
+        sprite_list.append(shapes.Rectangle(
+            x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
+
     
-    # Make Sprite Invisible Until It's Chained
-    sprite_list[-1].visible = True
-    sprite_list[-2].visible = True
+ 
 
 
 pyglet.clock.schedule_interval_soft(update, 1/60)
