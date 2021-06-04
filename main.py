@@ -18,13 +18,20 @@ apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint
 sprite_list = [snake_sprite]
 
 # Labels
-label = pyglet.text.Label(
+score_label = pyglet.text.Label(
     f"Score = {c.LENGTH-1}",
     font_name="Roboto",
     font_size = 10,
     x=10, y=10
 )
 
+death_label = pyglet.text.Label(
+    font_name="Roboto",
+    font_size=25,
+    x=c.WIDTH//2,
+    y=c.HEIGHT//2,
+    anchor_x = "center"
+)
 playing = True
 
 # Decorator Methods
@@ -34,8 +41,12 @@ def on_draw():
     
     window.clear()
     if playing:
-        label.draw()
+        score_label.draw()
         sprite_batch.draw()
+    else:
+
+        death_label.draw()
+    
 
 # Keyboard Input Sets Snake Direction
 @window.event
@@ -117,7 +128,7 @@ def apple_snake_handle():
     apple_sprite.y = random.randint(1, c.HEIGHT-100)
     
     c.LENGTH += 1
-    label.text = f"Score = {c.LENGTH-1}"
+    score_label.text = f"Score = {c.LENGTH-1}"
 
     for i in range(4):
         sprite_list.append(shapes.Rectangle(
@@ -131,22 +142,22 @@ def out_of_bounds():
         kill()
 
 def kill():
-    global snake_sprite, apple_sprite, sprite_list, label
+    global snake_sprite, apple_sprite, sprite_list, score_label, playing
     playing = False
     pyglet.clock.unschedule(update) # Stop Updating Game
 
     snake_sprite.delete()
     apple_sprite.delete()
 
-    for i in sprite_list:
-        del i
+    del sprite_list
     
     window.clear()
-    label.delete()
+    score_label.delete()
+
+    death_label.text = f"You Died! Your score was {c.LENGTH-1}"
 
 if playing:
     pyglet.clock.schedule_interval(update, 1/60)
-    
 
 # Run
 if __name__ == "__main__":
