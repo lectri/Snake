@@ -30,6 +30,8 @@ playing = True
 # Decorator Methods
 @window.event
 def on_draw():
+    global playing
+    
     window.clear()
     if playing:
         label.draw()
