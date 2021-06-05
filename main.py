@@ -51,14 +51,24 @@ def on_draw():
 # Keyboard Input Sets Snake Direction
 @window.event
 def on_key_press(symbol, modifiers):
-    if symbol == key.LEFT:
-        c.snake_direction = "L"
-    if symbol == key.RIGHT:
-        c.snake_direction = "R"
-    if symbol == key.UP:
-        c.snake_direction = "U"
-    if symbol == key.DOWN:
-        c.snake_direction = "D"
+    if c.LENGTH > 1:
+        if symbol == key.LEFT and c.snake_direction != "R":
+            c.snake_direction = "L"
+        if symbol == key.RIGHT and c.snake_direction != "L":
+            c.snake_direction = "R"
+        if symbol == key.UP and c.snake_direction != "D":
+            c.snake_direction = "U"
+        if symbol == key.DOWN and c.snake_direction != "U":
+            c.snake_direction = "D"
+    else:
+        if symbol == key.LEFT:
+            c.snake_direction = "L"
+        if symbol == key.RIGHT:
+            c.snake_direction = "R"
+        if symbol == key.UP:
+            c.snake_direction = "U"
+        if symbol == key.DOWN:
+            c.snake_direction = "D"
 
 # Update
 def update(dt):
