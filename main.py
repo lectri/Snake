@@ -87,17 +87,10 @@ def move():
 
 
 def collison_check(sprite, target):
-    check = 0
-    if target.x < sprite.x + target.width:
-        check += 1
-    if target.x + target.width > sprite.x:
-        check += 1
-    if target.y < sprite.y + sprite.height:
-        check += 1
-    if target.y + target.height > sprite.y:
-        check += 1
-
-    if check == 4:
+    if target.x < sprite.x + target.width and \
+    target.x + target.width > sprite.x and \
+    target.y < sprite.y + sprite.height and \
+    target.y + target.height > sprite.y:
         return True
 
 
