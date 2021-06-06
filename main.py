@@ -15,6 +15,7 @@ snake_sprite = shapes.Rectangle(
     x=200, y=200, width=25, height=25, color=(255, 255, 152), batch=sprite_batch)
 apple_sprite = shapes.Rectangle(x=random.randint(250, c.WIDTH), y=random.randint(
     1, c.HEIGHT-100), width=25, height=25, color=(255, 0, 0), batch=sprite_batch)
+
 sprite_list = [snake_sprite]
 
 # Labels
@@ -75,6 +76,7 @@ def update(dt):
     move()
     follow()
     out_of_bounds()
+    head_body_handle()
     snake_apple = collison_check(snake_sprite, apple_sprite)
     if snake_apple == True:
         apple_snake_handle()
@@ -133,10 +135,17 @@ def apple_snake_handle():
     c.LENGTH += 1
     score_label.text = f"Score = {c.LENGTH-1}"
 
-    for i in range(4):
+    for i in range(8):
         sprite_list.append(shapes.Rectangle(
             x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=sprite_batch))
 
+def head_body_handle():
+    for i in sprite_list[7:]:
+        if snake_sprite.position == i.position:
+            global playing
+            if playing == False:
+                return "Dead"
+            kill()
     
 def out_of_bounds():
     if snake_sprite.x > c.WIDTH or snake_sprite.x < 0:
@@ -145,9 +154,11 @@ def out_of_bounds():
         kill()
 
 def kill():
-    global snake_sprite, apple_sprite, sprite_list, score_label, playing
+    print("Kill has run. Should run only ONCE.")
+    global snake_sprite, apple_sprite, sprite_list, score_label, playing, out_of_bounds
     playing = False
     pyglet.clock.unschedule(update) # Stop Updating Game
+    del out_of_bounds
 
     snake_sprite.delete()
     apple_sprite.delete()
