@@ -133,3 +133,5 @@ dmypy.json
 
 # Test File
 test.py
+
+.idea
