@@ -5,12 +5,11 @@ import pyglet
 from pyglet.window import key
 
 
-class Game(pyglet.window.Window):
+class Game:
     """
     A class that handles the window, and snake properties/functions.
     """
-    def __init__(self): # Constructor
-        pyglet.window.Window.__init__(self, 720, 480, "Snake")
+    def __init__(self, *args): # Constructor
 
         # Window Properties
         self.width = 720
@@ -44,6 +43,7 @@ class Game(pyglet.window.Window):
                 y=(self.height // 2) - 40,
                 anchor_x="center"
         )
+        self.restart = False
 
         # Sprite Properties
         self.sprite_batch = pyglet.graphics.Batch()
@@ -60,15 +60,15 @@ class Game(pyglet.window.Window):
 
     # Game Loop
     def on_draw(self): # Render
-        self.clear()
+            self.clear()
 
-        if self.alive:
-            self.sprite_batch.draw()
-            self.apple_sprite.draw()
-            self.score_label.draw()
-        else:
-           self.death_label.draw()
-           self.retry_label.draw()
+            if self.alive:
+                self.sprite_batch.draw()
+                self.apple_sprite.draw()
+                self.score_label.draw()
+            else:
+                self.death_label.draw()
+                self.retry_label.draw()
  
     def on_key_press(self, symbol, modifiers): # Recieve Input
         if self.alive:
@@ -90,6 +90,9 @@ class Game(pyglet.window.Window):
                     self.direction = "U"
                 if symbol == key.DOWN:
                     self.direction = "D"
+        else:
+            if symbol == key.SPACE:
+                self.restart = True
     
     def update(self, dt): # Update
         self.move()
@@ -98,7 +101,6 @@ class Game(pyglet.window.Window):
         if snake_apple_collision:
             self.grow()
         is_out_of_bounds = h.Handles.out_of_bounds(self.snake_sprite, self.width, self.height, self.kill)
-              
     # Snake Functions 
     def move(self):
         # Delta time keeps movement consistent regardless of game slowdowns.
@@ -141,3 +143,4 @@ class Game(pyglet.window.Window):
     def kill(self):
         self.alive = False
         self.death_label.text =  f"You died! Your score was {self.length - 1}."
+        pyglet.clock.unschedule(self.update)
