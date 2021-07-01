@@ -44,7 +44,6 @@ class Game:
                 anchor_x="center"
         )
         self.restart = False
-
         # Sprite Properties
         self.sprite_batch = pyglet.graphics.Batch()
 
@@ -100,6 +99,7 @@ class Game:
         snake_apple_collision = h.Handles.collision(self.snake_sprite, self.apple_sprite)
         if snake_apple_collision:
             self.grow()
+        self.body_collision()
         is_out_of_bounds = h.Handles.out_of_bounds(self.snake_sprite, self.width, self.height, self.kill)
     # Snake Functions 
     def move(self):
@@ -128,18 +128,25 @@ class Game:
             self.sprite_list[-1].visible = True
 
         return pos
-
+    
     def grow(self):
-            self.apple_sprite.x = random.randint(50, self.width-50)
-            self.apple_sprite.y = random.randint(50, self.height-50)
+        self.apple_sprite.x = random.randint(50, self.width-50)
+        self.apple_sprite.y = random.randint(50, self.height-50)
 
-            self.length += 1
-            self.score_label.text = f"Score = {self.length - 1}"
+        self.length += 1
+        self.score_label.text = f"Score = {self.length - 1}"
 
-            for i in range(8):
-                self.sprite_list.append(pyglet.shapes.Rectangle(
-                    x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=self.sprite_batch))
-        
+        for i in range(8):
+            self.sprite_list.append(pyglet.shapes.Rectangle(
+                x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=self.sprite_batch))
+
+    def body_collision(self):
+        for i in self.sprite_list[7:]:
+            if self.snake_sprite.position == i.position:
+                self.alive = False
+                self.kill()
+
+
     def kill(self):
         self.alive = False
         self.death_label.text =  f"You died! Your score was {self.length - 1}."
