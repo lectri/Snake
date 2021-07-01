@@ -21,6 +21,8 @@ class Game:
         self.speed = 5
         self.length = 1
         self.alive = True
+        self.head_color = (255, 105, 180)
+        self.body_color = (0, 255, 152)
 
         # Game Properties 
         self.score_label = pyglet.text.Label(
@@ -48,12 +50,12 @@ class Game:
         self.sprite_batch = pyglet.graphics.Batch()
 
         self.snake_sprite = pyglet.shapes.Rectangle(
-        x=200, y=200, width=25, height=25, color=(0, 255, 0), batch=self.sprite_batch)
+        x=200, y=200, width=25, height=25, color=self.head_color, batch=self.sprite_batch)
 
         self.apple_sprite = pyglet.shapes.Rectangle(x=random.randint(200, self.width-250), y=random.randint(
         200, self.height-200), width=25, height=25, color=(255, 0, 0), batch=self.sprite_batch)
         self.sprite_list = [self.snake_sprite]
-        
+
         # Schedule Update Function
         pyglet.clock.schedule_interval(self.update, 1 / 60)
 
@@ -138,14 +140,17 @@ class Game:
 
         for i in range(8):
             self.sprite_list.append(pyglet.shapes.Rectangle(
-                x=-100, y=-100, width=25, height=25, color=(152, 255, 152), batch=self.sprite_batch))
+                x=-100, y=-100, width=25, height=25, color=self.body_color, batch=self.sprite_batch))
+        
+        if self.length == 2:
+            for i in self.sprite_list[:7]:
+                i.color = self.head_color
 
     def body_collision(self):
         for i in self.sprite_list[7:]:
             if self.snake_sprite.position == i.position:
                 self.alive = False
                 self.kill()
-
 
     def kill(self):
         self.alive = False
